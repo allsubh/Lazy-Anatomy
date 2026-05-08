@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lazy Anatomy</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0e0e0d;
+  --surface: #161615;
+  --surface2: #1f1f1e;
+  --border: #272725;
+  --border2: #353533;
+  --text: #ddd9d3;
+  --muted: #67645d;
+  --dim: #3a3937;
+
+  --proportion: #c9983a;
+  --construction: #4d82c9;
+  --gesture: #3fa876;
+  --anatomy: #c96050;
+
+  --proportion-bg: #251b08;
+  --construction-bg: #0b1c30;
+  --gesture-bg: #082218;
+  --anatomy-bg: #26100e;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+  padding: 28px 16px 80px;
+}
+
+.wrap {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ── HEADER ── */
+.header {
+  margin-bottom: 36px;
+}
+.header h1 {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  margin-bottom: 3px;
+}
+.header p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ── SELECTORS ── */
+.sel-group { margin-bottom: 14px; }
+.sel-label {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.btn-row {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.btn {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 6px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  white-space: nowrap;
+  text-align: center;
+}
+.btn:hover { border-color: var(--border2); color: var(--text); }
+.btn.active {
+  border-color: var(--dim);
+  color: var(--text);
+  background: var(--surface2);
+}
+.btn.rnd { color: var(--muted); font-style: italic; }
+.btn.rnd.active { color: var(--text); }
+
+/* pillar row wraps into 2+3 */
+.pillar-row { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.pillar-row .full { grid-column: 1 / -1; }
+
+/* ── PICK BUTTON ── */
+.pick-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 9px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  margin: 20px 0 24px;
+  transition: background 0.12s, border-color 0.12s;
+  letter-spacing: -0.1px;
+}
+.pick-btn:hover { background: var(--surface2); border-color: var(--dim); }
+.pick-btn:active { transform: scale(0.993); }
+
+/* ── SESSION HEADER ── */
+.session-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* ── EXERCISE CARDS ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 15px 16px;
+  margin-bottom: 10px;
+  transition: opacity 0.2s;
+}
+.card.done-card { opacity: 0.55; }
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+.pill {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+.pill-proportion  { background: var(--proportion-bg);  color: var(--proportion); }
+.pill-construction{ background: var(--construction-bg); color: var(--construction); }
+.pill-gesture     { background: var(--gesture-bg);     color: var(--gesture); }
+.pill-anatomy     { background: var(--anatomy-bg);     color: var(--anatomy); }
+
+.card-id {
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--surface2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+.card-dur {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+.card-name {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  margin-bottom: 7px;
+}
+.card-desc {
+  font-size: 13px;
+  color: #9e9a93;
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.card-search {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.card-search span {
+  color: #4d82c9;
+}
+.card-actions { display: flex; gap: 7px; }
+.act-btn {
+  padding: 6px 13px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+}
+.act-btn:hover { border-color: var(--border2); color: var(--text); }
+.act-btn.is-done { color: var(--gesture); border-color: #1a4030; }
+.act-btn.is-skip:hover { color: var(--anatomy); border-color: #3a1814; }
+
+/* ── NEGLECT TRACKER ── */
+.neglect {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.neglect-label {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 11px;
+}
+.neglect-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+.neglect-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.neglect-name { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+.neglect-days { font-size: 14px; font-weight: 500; }
+.nd-ok    { color: var(--gesture); }
+.nd-warn  { color: var(--proportion); }
+.nd-never { color: var(--dim); }
+
+/* ── UTILS ── */
+.err {
+  font-size: 13px;
+  color: var(--anatomy);
+  background: var(--anatomy-bg);
+  border: 1px solid #3a1814;
+  border-radius: 8px;
+  padding: 11px 14px;
+  margin-bottom: 12px;
+}
+.hint {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 8px 0;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <h1>Lazy Anatomy</h1>
+    <p>Figure drawing curriculum · 103 exercises</p>
+  </div>
+
+  <div class="sel-group">
+    <div class="sel-label">Time</div>
+    <div class="btn-row" id="row-time">
+      <button class="btn" data-g="time" data-v="10"     onclick="sel('time',10)">10 min</button>
+      <button class="btn" data-g="time" data-v="15"     onclick="sel('time',15)">15 min</button>
+      <button class="btn" data-g="time" data-v="20"     onclick="sel('time',20)">20 min</button>
+      <button class="btn rnd" data-g="time" data-v="random" onclick="sel('time','random')">Random</button>
+    </div>
+  </div>
+
+  <div class="sel-group">
+    <div class="sel-label">Energy</div>
+    <div class="btn-row" id="row-energy">
+      <button class="btn" data-g="energy" data-v="low"     onclick="sel('energy','low')">Low</button>
+      <button class="btn" data-g="energy" data-v="normal"  onclick="sel('energy','normal')">Normal</button>
+      <button class="btn" data-g="energy" data-v="focused" onclick="sel('energy','focused')">Focused</button>
+      <button class="btn rnd" data-g="energy" data-v="random" onclick="sel('energy','random')">Random</button>
+    </div>
+  </div>
+
+  <div class="sel-group">
+    <div class="sel-label">Pillar</div>
+    <div class="pillar-row" id="row-pillar">
+      <button class="btn" data-g="pillar" data-v="proportion"  onclick="sel('pillar','proportion')">Proportion</button>
+      <button class="btn" data-g="pillar" data-v="construction" onclick="sel('pillar','construction')">Construction</button>
+      <button class="btn" data-g="pillar" data-v="gesture"     onclick="sel('pillar','gesture')">Gesture</button>
+      <button class="btn" data-g="pillar" data-v="anatomy"     onclick="sel('pillar','anatomy')">Anatomy</button>
+      <button class="btn rnd active full" data-g="pillar" data-v="random" onclick="sel('pillar','random')">Random pillar</button>
+    </div>
+  </div>
+
+  <button class="pick-btn" onclick="pickSession()">Pick my session →</button>
+
+  <div id="result"></div>
+
+  <div class="neglect">
+    <div class="neglect-label">Last practiced</div>
+    <div class="neglect-grid" id="neglect-grid"></div>
+  </div>
+
+</div>
+<script>
+// ─── DATABASE ────────────────────────────────────────────────────────────────
+
+const DB = [
+  // ── PROPORTION ──
+  {id:'P01',p:'proportion',name:'7.5 head stack — front',desc:'Draw a vertical line divided into 7.5 equal segments. Label top to bottom: chin, nipple line, navel, crotch, mid-thigh, knee, ankle, floor. Do it 3 times at different scales. You\'re building the measuring ruler — not drawing a person yet.',s:'7.5 head proportion diagram figure drawing',d:'low',t:8},
+  {id:'P02',p:'proportion',name:'7.5 head stack — side',desc:'The same ruler from P01 but from the side profile. The heel sits slightly behind the body\'s center of gravity. Label the same landmarks and note how they appear from the side. Do it 3 times.',s:'figure drawing side profile proportion chart',d:'low',t:8},
+  {id:'P03',p:'proportion',name:'7.5 head stack — back',desc:'The ruler from behind. Landmarks shift — shoulder blades appear at unit 1.5, spine dips at lumbar around unit 3, glutes peak around unit 4. Same ruler exercise, 3 times. Add back-specific landmarks.',s:'figure drawing back view proportion landmarks',d:'low',t:8},
+  {id:'P04',p:'proportion',name:'Head unit scaling drill',desc:'Draw an oval (the head). Measure its height. Draw the full body ruler below it using that measurement as your unit — if the oval is 3cm tall, each tick is 3cm, full ruler is 22.5cm. Do this 10 times with 10 different sized ovals. Oval and ruler only — no figure yet.',d:'low',t:10},
+  {id:'P05',p:'proportion',name:'Blind head unit test',desc:'Without reference, draw the full 7.5 head ruler from memory and label every landmark. Then check against the correct version. Circle everything that was wrong. Don\'t fix it — just observe. Your errors here are your personal blind spots.',s:'7.5 head proportion diagram',d:'normal',t:10},
+  {id:'P06',p:'proportion',name:'The three width bars',desc:'Draw a 7.5 head ruler. At the correct heights add three horizontal bars: head width (1 head-width), shoulders (2 head-widths), hips (1.5 head-widths). The unit here is the width of the head oval — the same unit working horizontally. Do it 4 times.',s:'figure drawing width ratio shoulders hips',d:'low',t:6},
+  {id:'P07',p:'proportion',name:'Width bars on a stick figure',desc:'Draw a simple stick figure — oval head, spine line, limb lines. At the shoulder, hip, and head positions add the three width bars at the correct proportions. Height and width talking to each other on the same drawing. Do it 5 times.',d:'low',t:8},
+  {id:'P08',p:'proportion',name:'Male vs female width comparison',desc:'Male: shoulders clearly wider than hips (2 units vs 1.5). Female: hips closer to shoulder width, narrower waist. Draw both side by side at the same 7.5 head height using only the three bars — no detail. 3 pairs.',s:'male female figure proportion comparison diagram',d:'normal',t:10},
+  {id:'P09',p:'proportion',name:'Width ratios at 3/4 angle',desc:'When the figure turns 45° the width bars compress due to perspective. Draw the three-bar diagram 4 times, each rotated further: 0°, 15°, 45°, 75°. Watch the bars get narrower as you turn. No formula — just observe what logically compresses.',s:'figure drawing 3/4 view proportion',d:'focused',t:12},
+  {id:'P10',p:'proportion',name:'Joint map — front',desc:'Draw a loose figure. Place a circle at every joint: 2 shoulders, 2 elbows, 2 wrists, 2 hips, 2 knees, 2 ankles. Check each against the ruler: elbows at unit 3 (waist), wrists at unit 4 (crotch), knees at unit 6. Do this 4 times.',d:'low',t:8},
+  {id:'P11',p:'proportion',name:'Joint map — side',desc:'Same as P10 from the side. The elbow sits slightly behind the torso centerline. The knee sits slightly in front of the hip joint. These spatial shifts matter for 3D poses. Place all 12 joint dots on 4 side-view figures.',d:'low',t:8},
+  {id:'P12',p:'proportion',name:'Joint map from memory',desc:'Draw a stick figure and place all 12 joint dots purely from memory at the correct heights. Then measure against the ruler. Write next to each wrong joint how far off it was. This tells you which joints your brain hasn\'t locked in yet.',d:'normal',t:10},
+  {id:'P13',p:'proportion',name:'Arm proportion breakdown',desc:'Upper arm and forearm are roughly equal (each ~1.5 head units). Draw the arm in 3 positions: hanging down, raised to shoulder, raised above head. In each position confirm the elbow dot still sits at waist height — the landmark doesn\'t move, only the arm around it does.',s:'arm proportion figure drawing elbow landmark',d:'normal',t:10},
+  {id:'P14',p:'proportion',name:'Leg proportion breakdown',desc:'Thigh and shin are roughly equal (each ~2 head units). Draw the leg in 3 positions: straight down, bent 90°, fully bent. Track where the knee sits each time. When straight the knee is at unit 6. When bent, the foot rises but the knee\'s distance from the hip doesn\'t change.',d:'normal',t:10},
+  {id:'P15',p:'proportion',name:'The eye line',desc:'The eyes sit at the exact halfway point of the entire head — including the skull above the hairline. Most people draw eyes too high. Draw 8 head ovals. On each find the exact halfway point and draw a horizontal line. Place two marks for eyes on that line. 8 times.',s:'eye placement halfway head proportion',d:'low',t:8},
+  {id:'P16',p:'proportion',name:'Face thirds',desc:'The face (chin to hairline only) divides into 3 equal thirds: hairline to brow, brow to nose base, nose base to chin. Draw 6 heads. On each mark the hairline then divide the face below it into three equal parts. No features — just the division lines.',s:'face thirds proportion diagram',d:'low',t:8},
+  {id:'P17',p:'proportion',name:'Five eyes width rule',desc:'The face is 5 eye-widths across: left gap (1) + left eye (1) + between gap (1) + right eye (1) + right gap (1) = 5. Draw 6 heads of different sizes. On each draw the eye line then divide it into 5 equal segments. No actual eyes — just segment marks.',s:'five eyes width rule proportion face',d:'low',t:8},
+  {id:'P18',p:'proportion',name:'Profile proportion map',desc:'The ear sits in the back half of the head, vertically centered on the halfway line. The nose protrudes ~1 eye-width forward from the face plane. The back skull is rounder and larger than most people draw. Draw 5 profiles marking these landmarks only.',s:'head profile proportion landmarks side view',d:'normal',t:10},
+  {id:'P19',p:'proportion',name:'Adult vs child proportions',desc:'A 6-year-old is ~5 heads tall. The head is proportionally huge, legs are short, body midpoint is higher. Draw adult (7.5 heads) and child (5 heads) side by side at the same total height. Ruler only — no detail. Study the difference.',s:'adult child figure proportion comparison',d:'normal',t:10},
+  {id:'P20',p:'proportion',name:'Standard vs heroic proportions',desc:'Standard figure = 7.5 heads. Heroic (armored warrior) = 8.5 heads. The extra length goes entirely into the legs. Draw both side by side. The ruler is the whole exercise — see exactly where the legs become longer. Your knight should use heroic proportions. Do 3 pairs.',s:'heroic figure proportion 8 heads vs standard',d:'normal',t:10},
+  {id:'P21',p:'proportion',name:'Seated figure proportions',desc:'When seated, a figure is ~4 head-heights from seat to top of head. Draw a seated figure using only the ruler and width bars. The upper body follows standing proportions. Thighs extend roughly horizontally, shins hang down. Mark all joints. 3 times.',d:'normal',t:12},
+  {id:'P22',p:'proportion',name:'Foreshortened arm',desc:'An arm pointing at the viewer appears much shorter — sometimes half its real length. Draw the same arm 5 times rotating toward the viewer in 20° increments: fully to the side first (full length), then progressively pointing at you. Watch it compress.',s:'foreshortening arm drawing example',d:'focused',t:12},
+  {id:'P23',p:'proportion',name:'Foreshortened leg',desc:'A leg kicking at the viewer looks dramatically shorter and the knee appears huge. Draw the leg 5 times: side view first (full length visible), then rotating toward you in stages. Mark the knee dot in each drawing to see it migrate visually.',s:'foreshortening leg drawing example',d:'focused',t:12},
+  {id:'P24',p:'proportion',name:'Proportion error hunt',desc:'Draw a full loose figure from imagination — any pose. When done, use your pencil held at arm\'s length as a measuring tool and check every proportion: head count, shoulder width, elbow height, wrist height, knee height. Circle everything off. Write one word per error.',d:'normal',t:15},
+  {id:'P25',p:'proportion',name:'Trace and measure',desc:'Find any figure drawing online. Trace over it lightly and add the proportion lines on top: the 7.5 head ruler, the three width bars, the 12 joint dots. See how a professional implicitly used these systems even if they didn\'t consciously think about them.',s:'figure drawing sketch full body',d:'low',t:10},
+  {id:'P26',p:'proportion',name:'Copy and scale',desc:'Find a simple figure sketch. Draw it at half the size. Then at double the size. Scaling forces you to understand the proportions intellectually — you can\'t just copy lines, you have to know the numbers to reproduce them at a different scale.',d:'normal',t:15},
+  {id:'P27',p:'proportion',name:'5-figure proportion page',desc:'Draw 5 very loose figures in different poses: standing, sitting, crouching, reaching up, leaning. After each one, before moving on, check key landmarks: head count, elbow height, wrist height, knee height. Fix what\'s off before moving to the next. No detail on any of them.',d:'focused',t:20},
+  {id:'P28',p:'proportion',name:'Imagination figure audit',desc:'Draw 3 figures from imagination in different poses. After each one write every proportion you think is wrong and why — e.g. "left leg too short, thigh is 1.5 heads instead of 2." Don\'t fix them. Accurate diagnosis is the skill being trained here.',d:'focused',t:20},
+
+  // ── CONSTRUCTION ──
+  {id:'C01',p:'construction',name:'Head: sphere + jaw box — front',desc:'Draw a circle (the skull). Attach a flattened rectangular box to its bottom front — this is the jaw. The box is roughly half the width of the sphere, one third as tall, sides angling inward to the chin. Draw this 6 times. No features — just the two shapes.',s:'Loomis head construction sphere box',d:'low',t:8},
+  {id:'C02',p:'construction',name:'Head: sphere + jaw box — side',desc:'From the side the sphere takes up 2/3 of the total head width. The jaw box extends forward from the front lower quarter of the sphere. The back of the head is pure sphere — rounder and larger than most people draw. Do 6 times.',s:'head construction side profile sphere jaw',d:'low',t:8},
+  {id:'C03',p:'construction',name:'Head: sphere + jaw box — 3/4',desc:'Draw the sphere. Curve a center line around its surface to indicate the face direction. Attach the jaw box aligned to that direction. The center line wraps around the sphere — when facing front it\'s straight, when turning it curves to the side. Do 6 times.',s:'3/4 head construction centerline Loomis',d:'normal',t:10},
+  {id:'C04',p:'construction',name:'Head center line drill',desc:'Draw 8 spheres in a row. On each draw only the center line at a different rotation: full front, slight turn, 3/4, near profile, profile, back 3/4, back slight turn, full back. No jaw box yet — just feeling the line wrap around the form.',d:'normal',t:8},
+  {id:'C05',p:'construction',name:'Head rotation sequence',desc:'Draw the same head 6 times like a turntable rotating: full front → slight turn → 3/4 → profile → back 3/4 → full back. Keep the head the same size each time. The sphere stays consistent, the jaw box rotates with the face direction.',s:'head rotation sequence construction drawing',d:'focused',t:15},
+  {id:'C06',p:'construction',name:'Head tilt — chin up and down',desc:'Draw the front-facing head 4 times: neutral, chin slightly up, chin fully up, chin down. The sphere stays the same — only the jaw box tilts relative to it. Add the horizontal eye line on each to see how it curves with the tilt.',s:'head tilt construction drawing chin up down',d:'normal',t:12},
+  {id:'C07',p:'construction',name:'Ribcage egg — front',desc:'Draw an egg shape — wider at the top, slightly pointed at the bottom. About 2 head units tall, 1.5 wide at widest. Add a vertical center line. That\'s a ribcage from the front. Do 8 times, varying the tilt slightly each time.',s:'ribcage construction figure drawing egg shape',d:'low',t:8},
+  {id:'C08',p:'construction',name:'Ribcage egg — side',desc:'From the side the ribcage is a flattened oval — not a round egg. The front is fairly flat, the back curves outward. Add a short line at the back upper edge where the spine enters. Do 8 times, varying the tilt.',d:'low',t:8},
+  {id:'C09',p:'construction',name:'Ribcage egg — 3/4',desc:'Draw the egg slightly turned — you see mostly the front but a sliver of the side. Add a center line curving around the surface. Same principle as the head center line from C04. Do 6 times, varying how much it\'s turned.',d:'normal',t:10},
+  {id:'C10',p:'construction',name:'Ribcage rotation sequence',desc:'Draw the ribcage 5 times across the page: front → 3/4 → side → back 3/4 → back. Keep the size consistent. Add a center line on each. Feeling the egg rotate in your imagination and committing it to paper.',d:'normal',t:12},
+  {id:'C11',p:'construction',name:'Ribcage tilt drill',desc:'In almost every interesting pose the ribcage tilts. Draw the ribcage egg 6 times with different tilts: upright, left, right, forward (top toward viewer), backward, one dramatic tilt of your choice. Add the center line each time.',d:'normal',t:10},
+  {id:'C12',p:'construction',name:'Pelvis shape — front',desc:'Think of the pelvis as a bucket: wide curved rim at top, narrowing toward the base. Draw the basic shape 6 times from the front — wide curved top, two sides angling inward, narrower base. Add a center line. The outer form only.',s:'pelvis construction figure drawing front view',d:'normal',t:8},
+  {id:'C13',p:'construction',name:'Pelvis shape — side',desc:'From the side the pelvis has a natural forward tilt — the front angles downward, the back curves outward. This creates the lower back\'s natural curve. Draw it 6 times with that tilt. The spine connects at the back upper edge.',s:'pelvis side view construction tilt figure drawing',d:'normal',t:8},
+  {id:'C14',p:'construction',name:'Pelvis rotation sequence',desc:'Draw the pelvis 5 times: front → 3/4 → side → back 3/4 → back. The 3/4 angle is the hardest — you\'re seeing the curved rim from an angle. Keep size consistent. Expect it to look rough. Keep going anyway.',s:'pelvis 3/4 view construction drawing',d:'focused',t:15},
+  {id:'C15',p:'construction',name:'Pelvis tilt drill',desc:'In a contrapposto pose (weight on one leg) the pelvis tilts so one hip is higher. Draw the pelvis 5 times with different lateral tilts from the front: flat, slight right, strong right, slight left, strong left. Add a horizontal line across the rim to make the tilt obvious.',s:'contrapposto pelvis tilt figure drawing',d:'normal',t:10},
+  {id:'C16',p:'construction',name:'Ribcage + pelvis — front, upright',desc:'Your first full torso. Connect the ribcage egg and pelvis bucket with a simple waist — two short curves narrowing inward. Leave space between them for the abdomen. Add a continuous center line through both. Draw 5 times, upright and neutral.',d:'normal',t:10},
+  {id:'C17',p:'construction',name:'Ribcage + pelvis — side with spine',desc:'From the side draw the actual spine as a gentle S-curve connecting the two forms. The ribcage leans slightly back, pelvis tilts forward. This S-curve is what makes a standing figure look relaxed rather than robotic. Draw 5 times. Exaggerate the curve at first to feel it.',s:'spine S-curve torso construction side view',d:'normal',t:12},
+  {id:'C18',p:'construction',name:'Counter-tilt torso',desc:'In a natural pose the ribcage and pelvis counter each other — when the pelvis tilts right, the ribcage tilts slightly left. Draw the torso 5 times with deliberate counter-tilts. Add a horizontal line across the top of each form to make the tilt visible.',s:'ribcage pelvis counter tilt figure drawing pose',d:'normal',t:12},
+  {id:'C19',p:'construction',name:'Torso rotation — 3 angles',desc:'Draw the full torso (ribcage + pelvis + waist) 3 times on one page: front, 3/4, and side. All in the same upright neutral pose. Forces you to solve the same form from 3 viewpoints in one session.',d:'focused',t:15},
+  {id:'C20',p:'construction',name:'Torso with head attached',desc:'Add the head on top of the ribcage. The neck rises from the front-top of the ribcage — not the center. The neck is roughly 1/3 of a head-width wide. Draw the full torso + head 5 times in different orientations. Try the head and ribcage tilting in opposition.',d:'focused',t:15},
+  {id:'C21',p:'construction',name:'Full torso rotation sequence',desc:'Draw the complete torso (head + ribcage + pelvis) 5 times: front → 3/4 → side → back 3/4 → back. All in a neutral upright pose. This tests everything from the head, ribcage, and pelvis groups together. Let it be rough.',s:'torso construction rotation sequence front back side',d:'focused',t:20},
+  {id:'C22',p:'construction',name:'Cylinder from 4 angles',desc:'Before drawing limbs, understand the cylinder. Draw it 4 times: from the side (rectangle with ellipses on each end), from the top (circle), from 3/4 (between the two), and foreshortened end-on (compressed circle). This is the basic unit of every limb.',s:'cylinder drawing perspective 3/4 foreshortening',d:'low',t:8},
+  {id:'C23',p:'construction',name:'Upper arm cylinder — multiple angles',desc:'Just the upper arm — no forearm. Draw it 6 times at different angles: hanging down, raised 45°, raised horizontally, raised overhead, pointing at viewer, pointing away. The cylinder narrows very slightly toward the elbow.',d:'normal',t:8},
+  {id:'C24',p:'construction',name:'Full arm — straight, 3 angles',desc:'Upper arm + elbow hinge + forearm cylinder, arm straight and extended. Draw from the side, front, and 3/4. On each, mark the elbow dot and confirm it would sit at waist height on the full figure.',d:'normal',t:10},
+  {id:'C25',p:'construction',name:'Full arm — bent elbow, 5 positions',desc:'Draw the bent arm 5 times with different bend angles: slightly (160°), moderate (120°), 90°, sharp (60°), fully bent. Focus on the elbow hinge as a clean pivot point — the angle changes but the hinge stays defined.',d:'normal',t:10},
+  {id:'C26',p:'construction',name:'Arm — same bent pose, 3 angles',desc:'Take one bent arm pose and draw it from 3 viewpoints: front, side, 3/4. Same pose, same bend angle — just rotated. This is the spatial reasoning exercise for arms. The hardest exercise in this group.',d:'focused',t:12},
+  {id:'C27',p:'construction',name:'Leg cylinders — straight, 3 angles',desc:'Thigh cylinder + knee hinge + shin cylinder + simple foot wedge, leg straight. Draw from front, side, and 3/4. Mark the knee dot on each. The knee is roughly halfway down the leg.',d:'normal',t:10},
+  {id:'C28',p:'construction',name:'Leg cylinders — bent knee, 5 positions',desc:'Draw the bent leg 5 times: slightly bent, moderately bent, 90°, sharply bent, fully bent (heel toward glute). Track the knee hinge as the pivot point throughout.',d:'normal',t:12},
+  {id:'C29',p:'construction',name:'Leg — same bent pose, 3 angles',desc:'One bent leg pose drawn from front, side, and 3/4. Same as C26 but for the leg. The hardest construction exercise in this group.',d:'focused',t:15},
+  {id:'C30',p:'construction',name:'Palm box — 3 views',desc:'Draw the palm as a flat rectangular box only (no fingers) from 3 angles: back of hand, palm facing you, and side. The box is roughly square, slightly wider than tall. Getting the container right before adding fingers.',s:'hand construction box palm drawing',d:'normal',t:8},
+  {id:'C31',p:'construction',name:'Fingers as cylinders',desc:'On top of the palm box add 4 finger cylinders attached at the knuckle line. They taper slightly toward the tips. Middle finger is longest. Back-of-hand view only. 5 drawings. No thumb yet.',d:'normal',t:10},
+  {id:'C32',p:'construction',name:'Thumb placement',desc:'The thumb attaches lower on the side of the palm box, roughly mid-edge, and can rotate in directions other fingers can\'t. Add the thumb to a hand in 3 positions: alongside index finger, extended 45° outward, tucked across the palm. 3 drawings.',d:'normal',t:10},
+  {id:'C33',p:'construction',name:'Full hand — 4 angles',desc:'Combine palm box + 4 fingers + thumb. Draw from 4 angles: back, palm, side, 3/4. Keep them small and loose — you\'re solving the construction, not the detail.',s:'hand construction 4 views drawing',d:'focused',t:15},
+  {id:'C34',p:'construction',name:'Foot as a wedge — 3 angles',desc:'The foot is two wedges: a large one heel to ball of foot, a smaller flatter one ball to toes. Together they create the arch. Draw from side (clearest), front (toes head-on), and 3/4. No toes — just the two-wedge structure.',s:'foot construction wedge drawing side front 3/4',d:'normal',t:12},
+  {id:'C35',p:'construction',name:'Full figure robot — front',desc:'Draw a complete standing figure using only construction forms: head sphere + jaw box, ribcage egg, pelvis bucket, 4 limb cylinders, palm boxes, foot wedges. Arms hanging naturally, legs straight. No anatomy, no detail. This is your crash test dummy — it needs to be solid.',s:'figure construction mannequin robot drawing Proko',d:'focused',t:20},
+
+  // ── GESTURE ──
+  {id:'G01',p:'gesture',name:'Line of action isolation',desc:'Don\'t use a reference yet. Draw 8 random curved lines on a page — S-curves, C-curves, slight leaning straights. These are lines of action. For each write one word about what pose energy it suggests: "reaching", "falling", "relaxed". Learning to read energy in a line before drawing figures.',d:'low',t:8},
+  {id:'G02',p:'gesture',name:'Line of action over reference',desc:'Pull up any figure drawing or photo. Before drawing the figure, draw only the single line of action over it — one stroke from head through spine to weight-bearing foot. Repeat with 6 different poses, different energies. Does your line capture the overall lean?',s:'figure drawing line of action examples',d:'low',t:10},
+  {id:'G03',p:'gesture',name:'Shoulder and hip tilt lines',desc:'Find 6 pose references. For each draw only 3 marks: the line of action, a line across the shoulders, a line across the hips. Nothing else. The shoulder and hip lines usually counter each other. 18 total marks on one page.',s:'gesture drawing shoulder hip tilt lines',d:'low',t:10},
+  {id:'G04',p:'gesture',name:'3-mark gesture drill',desc:'Go to line-of-action.com → Bodies → 30 seconds → 10 poses. For each: line of action + shoulder line + hip line. Only 3 marks per pose. At 30 seconds you won\'t have time for more — that\'s the point.',s:'line-of-action.com',d:'low',t:8},
+  {id:'G05',p:'gesture',name:'30-second sprints — line only',desc:'line-of-action.com → Bodies → 30 seconds → 10 poses. For each draw only the line of action — one stroke capturing the overall lean and energy of the pose. Nothing else.',d:'low',t:8},
+  {id:'G06',p:'gesture',name:'30-second sprints — 3 marks',desc:'line-of-action.com → Bodies → 30 seconds → 10 poses. Do the 3-mark gesture: line of action + shoulder line + hip line. Still no figure. Distilling each pose to its 3 most important lines.',d:'low',t:8},
+  {id:'G07',p:'gesture',name:'1-minute gestures — stick figure',desc:'line-of-action.com → Bodies → 1 minute → 8 poses. Add a loose stick figure on top of your 3 marks — head oval, spine line, limb lines. No volume. The stick figure confirms your gesture marks were correct — the limbs should flow from the gesture lines.',d:'low',t:10},
+  {id:'G08',p:'gesture',name:'1-minute gestures — torso block',desc:'line-of-action.com → Bodies → 1 minute → 8 poses. Replace the stick torso with a loose ribcage egg and pelvis block. The two forms should follow the tilt lines you established. This is where gesture and construction start to connect.',d:'normal',t:10},
+  {id:'G09',p:'gesture',name:'2-minute gestures — full figure',desc:'line-of-action.com → Bodies → 2 minutes → 6 poses. Draw a complete loose figure — gesture marks first (10 seconds), then torso block, head, limb cylinders. Always start with gesture marks before any form. You won\'t finish perfectly — that\'s fine.',d:'normal',t:14},
+  {id:'G10',p:'gesture',name:'5-minute gestures — construction on top',desc:'line-of-action.com → Bodies → 5 minutes → 3 poses. Start with 3 gesture marks, then build the full construction figure on top. This is how real figure drawing works — gesture first, construction second, detail last.',d:'normal',t:15},
+  {id:'G11',p:'gesture',name:'1-minute gesture marathon',desc:'line-of-action.com → Bodies → 1 minute → 15 poses without stopping. After finishing look at all 15 together. Which have the most energy? Which look stiff? Stiff ones almost always have a weak or missing line of action.',d:'normal',t:20},
+  {id:'G12',p:'gesture',name:'Gesture from action photos',desc:'Find 5 photos of people in motion — running, jumping, throwing, dancing. For each draw only the line of action. Action poses have extreme lines — close to full C or S curves. Let them be that extreme. Don\'t normalize them into something comfortable.',s:'dynamic action pose reference figure drawing',d:'normal',t:10},
+  {id:'G13',p:'gesture',name:'Seated figure gesture',desc:'line-of-action.com → Bodies → check Sitting → 1 minute → 8 poses. In seated figures the line of action often runs through the spine and continues through the thighs horizontally. The energy direction is different from standing. Focus on finding that line.',d:'normal',t:10},
+  {id:'G14',p:'gesture',name:'Lying figure gesture',desc:'line-of-action.com → Bodies → check Lying → 1 minute → 6 poses. Lying figures are the hardest gesture challenge — the line of action runs mostly horizontally and the pose can feel flat and dead if you don\'t find the curve.',d:'normal',t:8},
+  {id:'G15',p:'gesture',name:'Gesture with only 5 lines',desc:'No timer. Pick one pose reference with strong energy. Draw the entire figure using only 5 lines total. Line of action, shoulder line, hip line, and 2 more of your choice. Be ruthlessly selective about which lines matter most.',d:'focused',t:10},
+  {id:'G16',p:'gesture',name:'Gesture vs construction comparison',desc:'Pick one pose reference. Draw it twice side by side. First: construction only — no gesture marks first. Second: gesture marks first, then construction on top. Compare the two. The second almost always feels more alive. Understanding why is the lesson.',d:'focused',t:15},
+  {id:'G17',p:'gesture',name:'Mixed timer session',desc:'line-of-action.com → Bodies. Structure: 5 poses at 30 sec, 5 poses at 1 min, 5 poses at 2 min, 5 poses at 5 min. Always start with gesture marks before anything else regardless of how much time you have.',d:'normal',t:20},
+  {id:'G18',p:'gesture',name:'Gesture from imagination',desc:'No reference. Draw 5 figures from your head, each in a different pose. Before each one decide on the line of action first — draw that single curve, then build the figure from it. If you start with the head or torso instead of the line, stop and restart.',d:'focused',t:15},
+
+  // ── ANATOMY ──
+  {id:'A01',p:'anatomy',name:'Torso muscle map — front',desc:'Draw a front torso construction form. Add these 7 muscles as flat shapes, like patches: pectorals, deltoids, rectus abdominis, external obliques, serratus anterior (finger-like shapes on the side of the ribcage), trapezius, sternum line. Label each one.',s:'male torso muscle anatomy front view diagram',d:'normal',t:15},
+  {id:'A02',p:'anatomy',name:'Torso muscle map — back',desc:'Draw the back torso construction form. Add 5 key landmarks as flat shapes: trapezius (large diamond covering upper back), latissimus dorsi (wide V-shape from armpit to lower back), spine of scapula (ridge on shoulder blade), erector spinae (two columns flanking spine), gluteus maximus. Label each.',s:'back muscle anatomy diagram drawing landmarks',d:'normal',t:15},
+  {id:'A03',p:'anatomy',name:'Torso muscle map — side',desc:'From the side 4 landmarks are most visible: deltoid (shoulder cap), serratus anterior (side ribs), external oblique (side waist), latissimus dorsi (pulling shoulder down and back). Same flat-shape exercise from the side view. Label all 4.',s:'torso side view muscle anatomy figure drawing',d:'normal',t:12},
+  {id:'A04',p:'anatomy',name:'Pectoral shape change',desc:'The pectoral is not a static shape — it changes with arm movement. Draw the front torso 3 times: arm down (pectoral relaxed, roughly triangular), arm raised above head (pectoral stretched thin), arm pushed forward (pectoral bunched). Focus only on how the pectoral shape changes.',s:'pectoral shape change arm raised anatomy drawing',d:'normal',t:12},
+  {id:'A05',p:'anatomy',name:'Scapula movement on the back',desc:'Draw the back torso 3 times: arm hanging (scapula sits flat), arm raised forward (scapula rotates upward), both arms pulled back (scapulae squeeze toward spine). The scapula is a flat triangle riding on the ribcage surface. Show its position change in each.',s:'scapula movement back anatomy figure drawing',d:'focused',t:12},
+  {id:'A06',p:'anatomy',name:'Abdominal landmark map',desc:'The rectus abdominis is one long muscle divided by intersections into ~6 sections. External obliques flank it and flow into the hips. Draw the front torso 4 times, each time drawing the ab structure: outer edge of rectus, division lines, oblique sweep on each side. Vary the body angle slightly.',s:'rectus abdominis external oblique anatomy drawing',d:'normal',t:15},
+  {id:'A07',p:'anatomy',name:'Arm muscle map — straight arm',desc:'Draw a straight arm construction form. Add 5 surface muscles as flat shapes: deltoid (shoulder cap), bicep (front of upper arm), tricep (back of upper arm), flexors (inner forearm), extensors (outer forearm). Do this from 2 views: front and side. Label all 5.',s:'arm muscle anatomy surface landmarks drawing',d:'normal',t:12},
+  {id:'A08',p:'anatomy',name:'Bicep and tricep shape change',desc:'When the arm bends the bicep shortens and bunches into a rounder shape. The tricep on the back stretches. When straight the reverse happens. Draw the arm 3 times: fully straight, bent 90°, fully bent. Show bicep and tricep shape in each position.',s:'bicep tricep flexed vs relaxed anatomy',d:'normal',t:15},
+  {id:'A09',p:'anatomy',name:'Forearm twist — supination and pronation',desc:'When you rotate your forearm the two bones cross over each other and the muscles visibly twist. Draw the forearm 3 times: palm up (supinated, bones parallel, rounder shape), palm neutral (slight cross), palm down (pronated, bones crossed, shape changes). Focus on visible shape change.',s:'forearm supination pronation anatomy shape change',d:'focused',t:12},
+  {id:'A10',p:'anatomy',name:'Arm anatomy on construction form',desc:'Draw a full arm construction form in a bent pose. Add all 5 surface muscles on top of the cylinders — deltoid, bicep, tricep, flexors, extensors. The muscles wrap the cylinders, they don\'t float over them. Do twice: once relaxed, once under tension.',s:'arm muscles over construction form figure drawing',d:'focused',t:15},
+  {id:'A11',p:'anatomy',name:'Leg muscle map — front',desc:'Draw a straight leg. Add surface muscles: quad group (large mass of front thigh), iliotibial band (vertical line on outer edge), tibialis anterior (thin strap on outer shin), two bony knee bumps (medial and lateral condyles — always visible). Label everything. Do twice.',s:'leg muscle anatomy front view figure drawing landmarks',d:'normal',t:12},
+  {id:'A12',p:'anatomy',name:'Leg muscle map — back and side',desc:'Back: hamstrings fill the back thigh and separate into two visible tendons behind the knee. Gastrocnemius (calf) creates a diamond shape. Achilles tendon narrows to the heel. Side: you see quad-hamstring overlap at the thigh. Draw from back and side, labelling landmarks.',s:'leg muscle anatomy back side view drawing',d:'normal',t:12},
+  {id:'A13',p:'anatomy',name:'Knee landmark map',desc:'The kneecap (patella) sits on the front and moves when the leg bends. Two bony condyle bumps flank it. The patellar ligament runs from kneecap to shin. Draw the knee area only 6 times: front straight, front bent, side straight, side bent, 3/4 straight, 3/4 bent.',s:'knee anatomy drawing landmarks patella figure drawing',d:'focused',t:15},
+  {id:'A14',p:'anatomy',name:'Leg anatomy on construction form',desc:'Draw a full leg construction form in a bent pose. Add all visible surface muscles on top of the cylinders — wrap the construction, don\'t float over it. Do twice: once from front, once from side.',d:'focused',t:15},
+  {id:'A15',p:'anatomy',name:'Neck muscle map',desc:'Two muscles dominate the neck: the SCM (sternocleidomastoid) runs from behind the ear to the collarbone and pulls visible when the head turns. The trapezius rises from the shoulders to the base of the skull. Draw head + neck 4 times. Turn the head in at least 2 to see the SCM tighten.',s:'sternocleidomastoid neck anatomy figure drawing',d:'normal',t:12},
+  {id:'A16',p:'anatomy',name:'Facial plane map',desc:'The face is made of flat planes: top of skull faces up, forehead faces forward-up, brow ridge forward, eye socket recessed inward, nose forward-down, cheekbone forward-out, lips forward-down, jaw faces down. Draw 4 heads and on each draw the plane boundaries as straight lines — like a low-poly 3D model.',s:'head planes figure drawing anatomy light shadow',d:'focused',t:15},
+  {id:'A17',p:'anatomy',name:'Skull landmarks through skin',desc:'These bone landmarks are always visible through skin: brow ridge, cheekbone arch (zygomatic arch), chin point, jaw angle, temple depression, occipital protuberance (back skull bump). Draw 4 heads and mark each with a dot and label. These points never change.',s:'skull landmarks surface anatomy face drawing',d:'normal',t:12},
+  {id:'A18',p:'anatomy',name:'Anatomy over a gesture pose',desc:'line-of-action.com → 5-minute pose. Draw the full construction figure first (gesture marks + construction forms). Then in remaining time add major surface anatomy on top. You won\'t finish everything — prioritize the torso and most visible limbs.',d:'focused',t:15},
+  {id:'A19',p:'anatomy',name:'Single muscle deep study',desc:'Pick any one muscle from A01–A17 that you found confusing or got wrong. Draw that muscle alone 10 times — different angles, different states of tension and relaxation. Isolating one muscle deeply is more useful than a shallow pass over all of them.',d:'normal',t:15},
+  {id:'A20',p:'anatomy',name:'Anatomy error hunt',desc:'Find any figure drawing from a previous session. Look at it now with anatomy knowledge and identify every surface landmark that was implied wrong, missing, or incorrect. Write notes directly on the drawing. Not redrawing — just diagnosing.',d:'normal',t:10},
+  {id:'A21',p:'anatomy',name:'Clothed figure anatomy check',desc:'Anatomy doesn\'t disappear under clothing — it pushes through. Shirts wrinkle around the pectoral and shoulder. Pants bunch at the knee. Find a clothed figure reference. Draw construction + anatomy first, then clothing on top showing how the fabric responds to the forms beneath.',s:'clothing wrinkles over anatomy figure drawing',d:'focused',t:20},
+  {id:'A22',p:'anatomy',name:'Full figure anatomy build',desc:'The checkpoint exercise. Draw a complete figure from imagination: gesture marks first, construction forms second, surface anatomy third. No timer. After finishing audit it: are proportions correct? Are construction forms solid? Does the pose have a clear line of action? Does the anatomy make sense? Return to this every few weeks to measure progress.',d:'focused',t:20},
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+const PNAMES = { proportion:'Proportion', construction:'Construction', gesture:'Gesture', anatomy:'Anatomy' };
+
+let state = { time: null, energy: null, pillar: 'random' };
+let currentSession = [];
+
+function sel(type, val) {
+  state[type] = val;
+  document.querySelectorAll(`[data-g="${type}"]`).forEach(b =>
+    b.classList.toggle('active', b.dataset.v == String(val))
+  );
+}
+
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+
+function load() {
+  try { return JSON.parse(localStorage.getItem('fp2') || 'null') || { history:[], lastEx:{}, lastPillar:{} }; }
+  catch(e) { return { history:[], lastEx:{}, lastPillar:{} }; }
+}
+function save(d) { try { localStorage.setItem('fp2', JSON.stringify(d)); } catch(e) {} }
+
+// ─── PICKING ─────────────────────────────────────────────────────────────────
+
+function resolve() {
+  const times    = [10, 15, 20];
+  const energies = ['low', 'normal', 'focused'];
+  const pillars  = ['proportion', 'construction', 'gesture', 'anatomy'];
+  return {
+    time:   state.time   === 'random' ? times[Math.floor(Math.random()*3)]    : state.time,
+    energy: state.energy === 'random' ? energies[Math.floor(Math.random()*3)] : state.energy,
+    pillar: state.pillar === 'random' ? null                                   : state.pillar,
+  };
+}
+
+function wPick(pool, lastEx) {
+  const now = Date.now();
+  const ws = pool.map(e => 1 + Math.min((now - (lastEx[e.id]||0)) / 86400000, 30));
+  const tot = ws.reduce((s,w)=>s+w, 0);
+  let r = Math.random() * tot;
+  for (let i = 0; i < pool.length; i++) { r -= ws[i]; if (r <= 0) return pool[i]; }
+  return pool[pool.length-1];
+}
+
+function buildSession(time, energy, pillar, history, lastEx) {
+  const dmap = { low:['low'], normal:['low','normal'], focused:['low','normal','focused'] };
+  const diffs = dmap[energy];
+
+  let pool = DB.filter(e =>
+    (!pillar || e.p === pillar) &&
+    diffs.includes(e.d) &&
+    !history.includes(e.id)
+  );
+
+  if (pool.filter(e => e.t <= time).length < 2) {
+    pool = DB.filter(e => (!pillar || e.p === pillar) && diffs.includes(e.d));
+  }
+
+  const picks = [];
+  let left = time;
+  while (left >= 6 && picks.length < 4) {
+    const avail = pool.filter(e => e.t <= left && !picks.find(p=>p.id===e.id));
+    if (!avail.length) break;
+    const pick = wPick(avail, lastEx);
+    picks.push(pick);
+    left -= pick.t;
+  }
+  return picks;
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+
+function cardHTML(e, isDone) {
+  const search = e.s ? `<p class="card-search">Search: <span>${e.s}</span></p>` : '';
+  const actions = isDone
+    ? `<button class="act-btn is-done">✓ Done</button>`
+    : `<button class="act-btn" onclick="markDone('${e.id}')">Mark done</button>
+       <button class="act-btn is-skip" onclick="skip('${e.id}')">Skip</button>`;
+  return `<div class="card${isDone?' done-card':''}" id="card-${e.id}">
+    <div class="card-top">
+      <span class="pill pill-${e.p}">${PNAMES[e.p]}</span>
+      <span class="card-id">${e.id}</span>
+      <span class="card-dur">${e.t} min</span>
+    </div>
+    <p class="card-name">${e.name}</p>
+    <p class="card-desc">${e.desc}</p>
+    ${search}
+    <div class="card-actions">${actions}</div>
+  </div>`;
+}
+
+function pickSession() {
+  if (!state.time || !state.energy) {
+    document.getElementById('result').innerHTML = '<p class="hint">Select a time and energy level first.</p>';
+    return;
+  }
+  const { time, energy, pillar } = resolve();
+  const data = load();
+  currentSession = buildSession(time, energy, pillar, data.history, data.lastEx);
+
+  if (!currentSession.length) {
+    document.getElementById('result').innerHTML = '<div class="err">No exercises found for this combination. Try different settings.</div>';
+    return;
+  }
+
+  const total = currentSession.reduce((s,e)=>s+e.t, 0);
+  const pillarLabel = pillar ? PNAMES[pillar] : 'Mixed';
+  let html = `<p class="session-meta">~${total} min · ${currentSession.length} exercise${currentSession.length>1?'s':''} · ${pillarLabel}</p>`;
+  currentSession.forEach(e => html += cardHTML(e, false));
+  document.getElementById('result').innerHTML = html;
+}
+
+function markDone(id) {
+  const data = load();
+  const e = DB.find(x=>x.id===id);
+  if (!e) return;
+  data.history = [id, ...data.history.filter(h=>h!==id)].slice(0,4);
+  data.lastEx[id] = Date.now();
+  data.lastPillar[e.p] = Date.now();
+  save(data);
+
+  const card = document.getElementById('card-'+id);
+  if (card) {
+    card.classList.add('done-card');
+    card.querySelector('.card-actions').innerHTML = `<button class="act-btn is-done">✓ Done</button>`;
+  }
+  renderNeglect();
+}
+
+function skip(id) {
+  const data = load();
+  const idx = currentSession.findIndex(e=>e.id===id);
+  if (idx === -1) return;
+  const usedIds = currentSession.map(e=>e.id);
+  const { time, energy, pillar } = resolve();
+  const dmap = { low:['low'], normal:['low','normal'], focused:['low','normal','focused'] };
+  const diffs = dmap[energy] || ['low','normal','focused'];
+
+  const pool = DB.filter(e =>
+    (!pillar || e.p === pillar) &&
+    diffs.includes(e.d) &&
+    !usedIds.includes(e.id) &&
+    !data.history.includes(e.id) &&
+    e.t <= currentSession[idx].t + 5
+  );
+
+  if (!pool.length) {
+    const card = document.getElementById('card-'+id);
+    if (card) card.remove();
+    currentSession.splice(idx, 1);
+    return;
+  }
+
+  const replacement = wPick(pool, data.lastEx);
+  currentSession[idx] = replacement;
+
+  const card = document.getElementById('card-'+id);
+  if (card) card.outerHTML = cardHTML(replacement, false);
+}
+
+// ─── NEGLECT TRACKER ─────────────────────────────────────────────────────────
+
+function renderNeglect() {
+  const data = load();
+  const now = Date.now();
+  const pillars = ['proportion','construction','gesture','anatomy'];
+  let html = '';
+  pillars.forEach(p => {
+    const last = data.lastPillar[p] || 0;
+    let label, cls;
+    if (!last) { label = 'Never'; cls = 'nd-never'; }
+    else {
+      const days = Math.floor((now - last) / 86400000);
+      if (days === 0)      { label = 'Today';        cls = 'nd-ok'; }
+      else if (days === 1) { label = 'Yesterday';    cls = 'nd-ok'; }
+      else if (days <= 3)  { label = `${days}d ago`; cls = 'nd-ok'; }
+      else                 { label = `${days}d ago`; cls = 'nd-warn'; }
+    }
+    html += `<div class="neglect-item">
+      <div class="neglect-name">${PNAMES[p]}</div>
+      <div class="neglect-days ${cls}">${label}</div>
+    </div>`;
+  });
+  document.getElementById('neglect-grid').innerHTML = html;
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderNeglect();
+</script>
+</body>
+</html>
